@@ -1,0 +1,91 @@
+<!-- API KEY
+a23a86489757b8d4b46eb6489a057ed7 
+https://api.openweathermap.org/data/2.5/weather?q={city name}&appid={API key}
+<i class="fa-solid fa-magnifying-glass"></i> - SEARCH ICON
+<i class="fa-solid fa-magnifying-glass-location"></i>
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Weather</title>
+    <script src="https://kit.fontawesome.com/2e9bc437a5.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark">
+    <div class="ld-toggle">
+        <input type="checkbox" class="checkbox" id="checkbox">
+        <label for="checkbox" class="checkbox-label">
+            <i class="fas fa-moon"></i>
+            <i class="fas fa-sun"></i>
+            <span class="ball"></span>
+        </label>
+    </div>
+    <div class="card dark">
+        <div class="search">
+            <input type="text" name="loc" id="loc" placeholder="Enter City Name">
+            <button><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+        <div class="error">Invalid City Name. Try Again!</div>
+        <div class="weather">
+            <img src="images/clear.png" class="weather-icon">
+            <h1 class="temp">22 &deg;C</h1>
+            <h2 class="city">New York</h2>
+            <div class="details">
+                <div class="col">
+                    <img src="images/humidity.png">
+                    <div>
+                        <p class="humidity">50%</p>
+                        <p>Humidity</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <img src="images/wind.png">
+                    <div>
+                        <p class="wind">12 km/hr</p>
+                        <p>Wind Speed</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        //TOGGLE LIGHT DARK
+        const checkbox = document.getElementById("checkbox")
+        checkbox.addEventListener("change", () => {
+            document.body.classList.toggle("dark");
+            document.querySelector('.card').classList.toggle("dark");
+        })
+        
+        //WEATHER APP
+        const searchBox=document.querySelector('.search input');
+        const searchBtn=document.querySelector('.search button');
+        const apiKey="a23a86489757b8d4b46eb6489a057ed7";
+        const apiUrl="https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+        async function checkWeather(city){
+            const response= await fetch(apiUrl+city+`&appid=${apiKey}`);
+            var data=await response.json();
+            console.log(data);
+            if (response.status==404){
+                document.querySelector(".error").style.display='block';
+                document.querySelector('.weather').style.display='none';
+                // document.querySelector(".error").style.animation='shake 300ms';
+            }
+            else{
+                document.querySelector(".error").style.display='none';
+                document.querySelector('.city').textContent=data.name;
+                document.querySelector('.temp').innerHTML=Math.round(data.main.temp)+" &deg;C";
+                document.querySelector('.humidity').innerHTML=data.main.humidity+" %";
+                document.querySelector('.wind').innerHTML=data.wind.speed+" km/hr";
+                document.querySelector('.weather-icon').src=`images/${data.weather[0].main}.png`;
+                document.querySelector('.weather').style.display='block';
+            }
+        }
+        // checkWeather('Antarctica');
+        searchBtn.addEventListener('click',()=>{
+            checkWeather(searchBox.value);
+        })
+    </script>
+</body>
+</html>
